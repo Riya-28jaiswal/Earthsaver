@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>EcoSaver - Report Waste</title>
+    <!-----Link to external css file-->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f2ec;
+            color: #333;
+            padding: 20px;
+        }
+
+        /*form container style */
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* heading  style*/
+        h2,
+        h3 {
+            text-align: center;
+            color: #2c6e49;
+        }
+
+        /* label styling*/
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /*input and selecting styling */
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /*button styling*/
+        button {
+            background-color: #2c6e49;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #3e8e63;
+        }
+
+        /*report list styling*/
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            background: #d7f0db;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 5px solid #2c6e49;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>EcoSaver - Report Waste</h2>
+
+        <form id="reportForm">
+            <label>Your Name:</label>
+            <input type="text" id="name" required>
+
+            <label>Location:</label>
+            <input type="text" id="location" required>
+
+            <label>Type of Waste:</label>
+            <select id="wasteType" required>
+                <option value="">-- Select Type --</option>
+                <option value="Plastic">Solid Waste</option>
+                <option value="Organic">Liquid Waste</option>
+                <option value="Organic">Organic Waste</option>
+                <option value="Metal">Recyclable waste</option>
+                <option value="Organic">Hazardous Waste</option>
+                <option value="Organic">Biomedical Waste</option>
+                <option value="Organic">Electronic Waste</option>
+                <option value="Organic">Industrial Waste</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <button type="submit">Submit Report</button>
+        </form>
+
+        <div id="reportResult">
+            <h3>Submitted Reports:</h3>
+            <ul id="reportList"></ul>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("reportForm");
+        const reportList = document.getElementById("reportList");
+
+        //  step 1:Load reports from local storage(local storage se report load karo)
+        let savedReports = JSON.parse(localStorage.getItem("reports")) || [];
+
+        // step 2:Function to render report list(report list ko screen pe dikhane wali function)
+        function renderReports() {
+
+            reportList.innerHTML = "";//pehle saare items clear karo
+
+            savedReports.forEach(report => {
+                const li = document.createElement("li");
+                li.textContent = "Name:" + report.name + ",Location:" + report.location + ",Waste Type:" + report.wasteType;
+                reportList.appendChild(li);
+            });
+        }
+        //step 3:page load hote hi pehel se stored data dikhaye
+        renderReports(); // Show on page load
+
+        // Handle form submit(jab form submit ho)
+
+        form.addEventListener("submit", function (event) {
+
+            event.preventDefault();//page reload na ho
+
+            const name = document.getElementById("name").value.trim();
+            const location = document.getElementById("location").value.trim();
+            const wasteType = document.getElementById("wasteType").value;
+
+            //sab fields bhare gaye hai ya nahi
+
+
+            if (name && location && wasteType) {
+                const newReport = { name, location, wasteType };
+
+                savedReports.push(newReport);//list me add karo
+
+                localStorage.setItem("reports", JSON.stringify(savedReports));//local storage me save karo
+
+                renderReports();//screen pe update karo
+
+                form.reset();//form ko clear karo
+            } else {
+                alert("Please fill all fields.");
+            }
+        });
+    </script>
+
+</body>
+
+</html>
